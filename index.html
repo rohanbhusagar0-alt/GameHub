@@ -15,7 +15,7 @@
 .section{max-width:1180px;margin:auto;padding:20px 18px}.section h2{margin:0 0 15px;font-size:24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
 .card{background:linear-gradient(160deg,#111a2b,#0b111d);border:1px solid #202d43;border-radius:18px;overflow:hidden;transition:.2s;box-shadow:0 12px 30px #0004}.card:hover{transform:translateY(-4px);border-color:#3d5977}
 .thumb{height:140px;display:grid;place-items:center;font-size:54px;background:radial-gradient(circle at 50% 35%,#233958,#0b101c)}.info{padding:14px}.title{font-weight:800}.meta{font-size:12px;color:#8e9bb0;margin:5px 0 12px}.play{width:100%;border:0;border-radius:11px;padding:10px;background:#62e6ff;color:#061018;font-weight:900;cursor:pointer}
-.empty{color:#8e9bb0;padding:25px 0}.footer{max-width:1180px;margin:30px auto;padding:25px 18px;color:#718096;border-top:1px solid #1d2638;font-size:13px}
+.empty{color:#8e9bb0;padding:25px 0}.top-actions{display:flex;gap:8px}.iconbtn{border:1px solid #27344b;background:#0d1422;color:#fff;border-radius:12px;padding:10px 12px;cursor:pointer}.fav{border:1px solid #27344b;background:#0d1422;color:#fff;border-radius:10px;padding:7px 9px;cursor:pointer;float:right}.fav.on{border-color:#ffd75a;color:#ffd75a}.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.stat{padding:8px 11px;border:1px solid #202d43;background:#0d1422;border-radius:12px;color:#aeb9cc;font-size:12px}.stat b{color:#fff}.footer{max-width:1180px;margin:30px auto;padding:25px 18px;color:#718096;border-top:1px solid #1d2638;font-size:13px}
 .modal{position:fixed;inset:0;background:#03050bd9;z-index:50;display:none;align-items:center;justify-content:center;padding:14px}.modal.show{display:flex}.panel{width:min(900px,100%);height:min(720px,92vh);background:#080e19;border:1px solid #26354d;border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
 .bar{padding:12px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1d293d}.close{background:#182235;color:#fff;border:0;border-radius:9px;padding:8px 12px;cursor:pointer}.gamearea{position:relative;flex:1;display:grid;place-items:center;background:#030711}.gamearea canvas{width:100%;height:100%;max-width:860px;object-fit:contain;touch-action:none}
 .hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#8996aa;font-size:12px;pointer-events:none}.controls{position:absolute;bottom:22px;left:18px;right:18px;display:flex;justify-content:space-between;pointer-events:none}
@@ -24,24 +24,40 @@
 </style>
 </head>
 <body>
-<header class="top"><nav class="nav"><div class="logo">Game<span>Hub</span></div><div class="search"><input id="search" placeholder="Search games…" autocomplete="off"></div><button class="sound" id="sound">🔊 Sound</button></nav></header>
-<main><section class="hero"><div class="eyebrow">Instant browser gaming</div><h1>Play. Compete.<br>Have fun.</h1><p>A fast-growing hub for games that launch instantly in your browser. No APK. No download. Just tap Play.</p><div class="chips" id="chips"><button class="chip active" data-cat="All">All</button><button class="chip" data-cat="Arcade">Arcade</button><button class="chip" data-cat="Racing">Racing</button><button class="chip" data-cat="Action">Action</button><button class="chip" data-cat="Puzzle">Puzzle</button><button class="chip" data-cat="Casual">Casual</button></div></section>
-<section class="section"><h2>Featured Games</h2><div class="grid" id="grid"></div><div class="empty" id="empty" hidden>No games found.</div></section></main>
+<header class="top"><nav class="nav"><div class="logo">Game<span>Hub</span></div><div class="search"><input id="search" placeholder="Search games…" autocomplete="off"></div><div class="top-actions"><button class="iconbtn" id="favoritesBtn">♡ Favorites</button><button class="sound" id="sound">🔊 Sound</button></div></nav></header>
+<main><section class="hero"><div class="eyebrow">Instant browser gaming</div><h1>Play. Compete.<br>Have fun.</h1><p>A fast-growing hub for games that launch instantly in your browser. No APK. No download. Just tap Play.</p><div class="chips" id="chips"><button class="chip active" data-cat="All">All</button><button class="chip" data-cat="Arcade">Arcade</button><button class="chip" data-cat="Racing">Racing</button><button class="chip" data-cat="Action">Action</button><button class="chip" data-cat="Puzzle">Puzzle</button><button class="chip" data-cat="Casual">Casual</button></div><div class="stats"><div class="stat">🎮 <b id="gameCount">5</b> games</div><div class="stat">⭐ <b id="favCount">0</b> favorites</div><div class="stat">▶ <b id="playedCount">0</b> played</div></div></section>
+<section class="section"><h2 id="sectionTitle">Featured Games</h2><div class="grid" id="grid"></div><div class="empty" id="empty" hidden>No games found.</div></section></main>
 <footer class="footer">© 2026 GameHub · Browser games, built for instant play.</footer>
 <div class="modal" id="modal"><div class="panel"><div class="bar"><strong id="gameTitle">Game</strong><button class="close" id="close">✕</button></div><div class="gamearea"><canvas id="canvas" width="900" height="600"></canvas><div class="hint" id="hint"></div><div class="controls" id="controls"></div></div></div></div>
 <script>
 const games=[
-{id:'neon',title:'Neon Racer',cat:'Racing',icon:'🏎️',meta:'Arcade racing'},
-{id:'space',title:'Space Shooter',cat:'Action',icon:'🚀',meta:'Survive the wave'},
+{id:'neon',title:'Neon Racer',cat:'Racing',icon:'🏎️',meta:'Arcade racing',badge:'Featured'},
+{id:'space',title:'Space Shooter',cat:'Action',icon:'🚀',meta:'Survive the wave',badge:'New'},
 {id:'snake',title:'Snake',cat:'Casual',icon:'🐍',meta:'Classic endless'},
 {id:'breakout',title:'Breakout',cat:'Arcade',icon:'🧱',meta:'Destroy the bricks'},
-{id:'dodge',title:'Dodge',cat:'Arcade',icon:'⚡',meta:'Avoid everything'}
+{id:'dodge',title:'Dodge',cat:'Arcade',icon:'⚡',meta:'Avoid everything',badge:'New'}
 ];
+let favorites=JSON.parse(localStorage.getItem('gamehub_favorites')||'[]');
+let recent=JSON.parse(localStorage.getItem('gamehub_recent')||'[]');
+let favoritesOnly=false;
 const grid=document.getElementById('grid'),search=document.getElementById('search'),empty=document.getElementById('empty');let cat='All';
-function render(){let q=search.value.toLowerCase();let list=games.filter(g=>(cat==='All'||g.cat===cat)&&(g.title+' '+g.cat+' '+g.meta).toLowerCase().includes(q));grid.innerHTML=list.map(g=>`<article class="card"><div class="thumb">${g.icon}</div><div class="info"><div class="title">${g.title}</div><div class="meta">${g.cat} · ${g.meta}</div><button class="play" onclick="openGame('${g.id}')">▶ Play Now</button></div></article>`).join('');empty.hidden=list.length>0}
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');cat=b.dataset.cat;render()});search.oninput=render;render();
+function render(){
+ let q=search.value.toLowerCase();
+ let list=games.filter(g=>(cat==='All'||g.cat===cat)&&(!favoritesOnly||favorites.includes(g.id))&&(g.title+' '+g.cat+' '+g.meta).toLowerCase().includes(q));
+ document.getElementById('sectionTitle').textContent=favoritesOnly?'Your Favorites':(cat==='All'?'Featured Games':cat+' Games');
+ grid.innerHTML=list.map(g=>`<article class="card"><div class="thumb">${g.icon}</div><div class="info"><button class="fav ${favorites.includes(g.id)?'on':''}" onclick="toggleFav('${g.id}')">${favorites.includes(g.id)?'★':'☆'}</button><div class="title">${g.title}</div><div class="meta">${g.cat} · ${g.meta}${g.badge?' · '+g.badge:''}</div><button class="play" onclick="openGame('${g.id}')">▶ Play Now</button></div></article>`).join('');
+ empty.hidden=list.length>0;
+ document.getElementById('gameCount').textContent=games.length;
+ document.getElementById('favCount').textContent=favorites.length;
+ document.getElementById('playedCount').textContent=recent.length;
+}
+function toggleFav(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem('gamehub_favorites',JSON.stringify(favorites));render()}
+document.getElementById('favoritesBtn').onclick=()=>{favoritesOnly=!favoritesOnly;document.getElementById('favoritesBtn').textContent=favoritesOnly?'✕ All Games':'♡ Favorites';render()};
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');cat=b.dataset.cat;favoritesOnly=false;document.getElementById('favoritesBtn').textContent='♡ Favorites';render()});
+search.oninput=render;render();
+
 const modal=document.getElementById('modal'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),title=document.getElementById('gameTitle'),hint=document.getElementById('hint'),controls=document.getElementById('controls');let raf=0,keys={};
-function openGame(id){cancelAnimationFrame(raf);title.textContent=games.find(x=>x.id===id).title;modal.classList.add('show');controls.innerHTML='';keys={};if(id==='neon')runRacer();if(id==='space')runSpace();if(id==='snake')runSnake();if(id==='breakout')runBreakout();if(id==='dodge')runDodge()}
+function openGame(id){cancelAnimationFrame(raf);title.textContent=games.find(x=>x.id===id).title;modal.classList.add('show');controls.innerHTML='';keys={};recent=[id,...recent.filter(x=>x!==id)].slice(0,10);localStorage.setItem('gamehub_recent',JSON.stringify(recent));render();if(id==='neon')runRacer();if(id==='space')runSpace();if(id==='snake')runSnake();if(id==='breakout')runBreakout();if(id==='dodge')runDodge()}
 function closeGame(){modal.classList.remove('show');cancelAnimationFrame(raf)}document.getElementById('close').onclick=closeGame;modal.onclick=e=>{if(e.target===modal)closeGame()};
 addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 function fit(){let r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;canvas.width=Math.max(500,r.width*d);canvas.height=Math.max(350,r.height*d);ctx.setTransform(d,0,0,d,0,0);return{w:r.width,h:r.height}}
